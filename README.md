@@ -87,6 +87,7 @@ A `Feed` can be configured with the following properites:
 * `name` - The name of the feed, eg "morning"
 * `hour` - The hour of the day at which to feed in 24 hour format
 * `minute` - The minute of the day at which to feed
+* `quantity` - TODO The quantity of food to be served aka the servo rotation time in secs
 
 
 ### Running
