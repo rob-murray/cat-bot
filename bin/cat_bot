@@ -1,0 +1,12 @@
+#!/bin/bash
+
+# Executable for running application.
+#
+# $ bin/cat_bot
+#
+# Use environment variables to control application, see README.
+# $ APP_ENV=production bin/cat_bot
+#
+
+BINPATH=`dirname $0`
+python "$BINPATH/../cat_bot/main.py" $@

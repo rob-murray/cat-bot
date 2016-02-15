@@ -1,0 +1,13 @@
+---
+logging_config: "config/logging-prod.yaml"
+io_adapter: "RaspberryPi"
+feeds:
+  - name: "morning"
+    hour: 7
+    minute: 0
+  - name: "evening"
+    hour: 16
+    minute: 45
+  - name: "night"
+    hour: 17
+    minute: 30
