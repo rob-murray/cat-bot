@@ -43,7 +43,7 @@ class Configuration(object):
     '''
     Time inteval for heartbeat tick
     '''
-    return 30.0 # seconds
+    return float(self.config["heartbeat_time"])
 
   def feeds(self):
     '''

@@ -1,6 +1,7 @@
 ---
 logging_config: "config/logging-dev.yaml"
 io_adapter: "LoggingIO"
+heartbeat_time: 15
 feeds:
   - name: "morning"
     hour: 7
