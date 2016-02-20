@@ -14,9 +14,8 @@ PITCH = 500
 
 class RaspberryPi(object):
 
-  def __init__(self, controller):
+  def __init__(self):
     self.logger = logging.getLogger(__name__)
-    self.controller = controller
 
     GPIO.setmode(GPIO.BCM)
     GPIO.setup(SERVO_PIN, GPIO.OUT)
@@ -25,8 +24,8 @@ class RaspberryPi(object):
     GPIO.setup(FEED_BUTTON_PIN, GPIO.IN, pull_up_down=GPIO.PUD_UP)
     self.pwm = GPIO.PWM(SERVO_PIN, CONTROL_FREQ)
 
-    # This callback will be run in another thread; irl we will need to synchronise getting and setting feeding schedule
-    GPIO.add_event_detect(FEED_BUTTON_PIN, GPIO.FALLING, callback=self.button_pressed, bouncetime=1000)
+    # This callback will be run in another thread
+    GPIO.add_event_detect(FEED_BUTTON_PIN, GPIO.FALLING, callback=self._button_pressed, bouncetime=1000)
 
   def buzz(self, pitch, duration):
     pitch = float(pitch)
@@ -63,9 +62,22 @@ class RaspberryPi(object):
     self.light_off()
     self.logger.debug("Feed ended")
 
-  def button_pressed(self, channel):
+  def _button_pressed(self, channel):
+    '''
+    Private: internal callback when button is pressed for feed
+      This will be on GPIO specific thread;
+      irl we will need to synchronise getting and setting feeding schedule
+    '''
     self.logger.debug("Button pressed!")
-    self.controller.button_pressed()
+    if self.invoke_feed_callback is not None:
+      self.invoke_feed_callback()
+
+  def on_button_press(self, callback):
+    '''
+    Add a callback for when feed button is pressed;
+    This callback will be called on a thread other than main thread
+    '''
+    self.invoke_feed_callback = callback
 
   def startup(self):
     '''
@@ -75,9 +87,9 @@ class RaspberryPi(object):
     self.light_off()
     GPIO.output(BUZZER_PIN, False)
 
-  def beat(self):
+  def tick(self):
     '''
-    Called for each internal tick or heartbeat
+    Called for each internal tick or heartbeat;
     '''
     self.logger.debug("heartbeat felt")
     self.light_on()

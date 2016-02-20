@@ -7,9 +7,8 @@ class LoggingIO(object):
   '''
   An IO implementation that just logs everything. Used for testing.
   '''
-  def __init__(self, controller):
+  def __init__(self):
     self.logger = logging.getLogger(__name__)
-    self.controller = controller
 
   def feed(self, feed):
     '''
@@ -20,9 +19,16 @@ class LoggingIO(object):
     '''
     self.logger.info("Feeding: {}".format(feed.to_display()))
 
+  def on_button_press(self, callback):
+    '''
+    Add a callback for when feed button is pressed
+    '''
+    self.invoke_feed_callback = callback
+
   def button_pressed(self):
     self.logger.debug("Button pressed!")
     # TODO how to simulate this
+    # self.invoke_feed_callback()
 
   def startup(self):
     '''
@@ -30,7 +36,7 @@ class LoggingIO(object):
     '''
     self.logger.info("Startup")
 
-  def beat(self):
+  def tick(self):
     '''
     Called for each internal tick or heartbeat
     '''
