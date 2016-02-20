@@ -23,13 +23,14 @@ class Feed(object):
     '''
     return Feed(
       feed_config["name"],
-      FeedTime(feed_config["hour"], feed_config["minute"])
+      FeedTime(feed_config["hour"], feed_config["minute"]),
+      Feed.DEFAULT_QUANTITY
     )
 
-  def __init__(self, name, feed_time):
+  def __init__(self, name, feed_time, quantity):
     self.name = name
     self.feed_time = feed_time
-    self.quantity = Feed.DEFAULT_QUANTITY
+    self.quantity = quantity
 
   def time_to_feed(self):
     '''
@@ -47,4 +48,4 @@ class Feed(object):
     return self.feed_time.to_epoch_time()
 
   def to_display(self):
-    return "Feed: name={} quantity={:f} {}".format(self.name, self.quantity, self.feed_time.to_display())
+    return "Feed: name={} quantity={:.2f} {}".format(self.name, self.quantity, self.feed_time.to_display())

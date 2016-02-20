@@ -35,8 +35,6 @@ class FeedTime(object):
     if type(other) is type(self):
       return self.hour_of_the_day == other.hour_of_the_day and self.minute_of_the_day == other.minute_of_the_day
 
-    print other
-
     # TODO check for/coerce time/datetime type
     # for now assume its a time tuple https://docs.python.org/2/library/time.html#time.struct_time
     if self.hour_of_the_day == other[3] and self.minute_of_the_day == other[4]:
