@@ -1,6 +1,7 @@
 ---
 logging_config: "config/logging-prod.yaml"
 io_adapter: "RaspberryPi"
+heartbeat_time: 30
 feeds:
   - name: "morning"
     hour: 7

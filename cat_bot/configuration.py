@@ -43,7 +43,7 @@ class Configuration(object):
     '''
     Time inteval for heartbeat tick
     '''
-    return 30.0 # seconds
+    return float(self.config["heartbeat_time"])
 
   def feeds(self):
     '''
@@ -51,7 +51,7 @@ class Configuration(object):
     '''
     return map(lambda feed_config: self._create_feed_from_config(feed_config), self.config["feeds"])
 
-  def build_io_adapter(self, controller):
+  def build_io_adapter(self):
     '''
     Create a new instance of configured IO adapter
     '''
@@ -59,10 +59,10 @@ class Configuration(object):
 
     if io_adapter_config == "RaspberryPi":
       from io.raspberry_pi import RaspberryPi
-      return RaspberryPi(controller)
+      return RaspberryPi()
     elif io_adapter_config == "LoggingIO":
       from io.logging_io import LoggingIO
-      return LoggingIO(controller)
+      return LoggingIO()
     else:
       raise Exception("Unknown io_adapter: '%s'" % io_adapter_config)
 

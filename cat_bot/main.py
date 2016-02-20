@@ -31,16 +31,17 @@ def read_from_heartbeat_queue():
 
 if __name__ == "__main__":
   scheduler = FeedScheduler(FEEDS)
-  controller = Controller(scheduler)
-  io_adapter = CONFIG.build_io_adapter(controller)
+  io_adapter = CONFIG.build_io_adapter()
+  controller = Controller(scheduler, io_adapter)
   heartbeat = HeartbeatTimer(HEARTBEAT_TIME, heartbeat_callback)
 
   try:
-    controller.start(io_adapter)
+    controller.start()
     heartbeat.start()
 
     while True:
       read_from_heartbeat_queue()
+      controller.run()
 
   finally:
     heartbeat.stop()
