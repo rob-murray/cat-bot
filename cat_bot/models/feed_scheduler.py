@@ -2,7 +2,7 @@ import logging
 import time
 
 class FeedScheduler(object):
-  MANUAL_ONLY = False
+  MANUAL_ONLY = False # No automatic feeding; only triggered by button
 
   def __init__(self, feeds):
     self.logger = logging.getLogger(__name__)
@@ -12,6 +12,10 @@ class FeedScheduler(object):
     self.__set_next_feed()
 
   def reset(self):
+    '''
+    A command to reset FeedScheduler to next set.
+    This is a bit of a hack to go from one day to another.
+    '''
     if self.__any_remaining_feeds():
       self.logger.debug("Reset called after completing all feeds")
     else:
@@ -19,6 +23,16 @@ class FeedScheduler(object):
     self.current_feed_index = 0
 
   def time_to_feed(self):
+    '''
+    Query if it is currently time for a Feed.
+    This will be the case if;
+      * The time currently matches a set feeding time.
+      * There are remaining feeds
+      * Not currently set to manual only
+
+    Returns:
+      True if all preconditions are met
+    '''
     if not self.can_feed():
       return False
 
@@ -30,11 +44,17 @@ class FeedScheduler(object):
     return feed.time_to_feed()
 
   def can_feed(self):
+    '''
+    Query if any feeds are available.
+
+    Returns:
+      True if it is possible to feed.
+    '''
     if self.__any_remaining_feeds():
+      return True
+    else:
       self.logger.debug("Cannot feed; reached maximum feeds")
       return False
-    else:
-      return True
 
   def feed(self):
     '''
@@ -50,12 +70,12 @@ class FeedScheduler(object):
     feed = self.__next_feed()
     self.logger.info("Preparing to feed: {}".format(feed.to_display()))
     self.__increment_feed_index()
-    self.logger.debug("There are now {:d} feeds left".format(self.__remaining_feeds()))
+    self.logger.debug("There are now {:d} feeds left".format(self.__feeds_remaining_count()))
 
     return feed
 
   def __any_remaining_feeds(self):
-    return self.current_feed_index >= self.max_feeds
+    return self.current_feed_index < self.max_feeds
 
   def __next_feed(self):
     return self.feeds[self.current_feed_index]
@@ -63,7 +83,7 @@ class FeedScheduler(object):
   def __increment_feed_index(self):
     self.current_feed_index += 1
 
-  def __remaining_feeds(self):
+  def __feeds_remaining_count(self):
     return self.max_feeds - self.current_feed_index
 
   def __set_next_feed(self):
@@ -84,5 +104,5 @@ class FeedScheduler(object):
       self.current_feed_index = self.feeds.index(next_feed)
 
     self.logger.debug("Setting next feed to: {}".format(next_feed.to_display()))
-    self.logger.debug("There are now {:d} feeds left".format(self.__remaining_feeds()))
+    self.logger.debug("There are now {:d} feeds left".format(self.__feeds_remaining_count()))
 
