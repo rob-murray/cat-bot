@@ -14,3 +14,5 @@ feeds:
     minute: 30
 observers:
   - klass: "SpreadsheetUpdater"
+    ifttt_event_name: "cat_bot_test"
+    ifttt_api_key: "do-not-commit"

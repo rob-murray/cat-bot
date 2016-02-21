@@ -48,4 +48,4 @@ class Feed(object):
     return self.feed_time.to_epoch_time()
 
   def to_display(self):
-    return "Feed: name={} quantity={:.2f} {}".format(self.name, self.quantity, self.feed_time.to_display())
+    return "<Feed: name={} quantity={:.2f} {}>".format(self.name, self.quantity, self.feed_time.to_display())

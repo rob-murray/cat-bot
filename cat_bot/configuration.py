@@ -82,4 +82,4 @@ class Configuration(object):
   def _create_observer_from_config(self, observer_config):
     if observer_config["klass"] == "SpreadsheetUpdater":
       from observers.spreadsheet_updater import SpreadsheetUpdater
-      return SpreadsheetUpdater()
+      return SpreadsheetUpdater(observer_config["ifttt_api_key"], observer_config["ifttt_event_name"])

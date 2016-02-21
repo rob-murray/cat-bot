@@ -35,6 +35,7 @@ class Controller(object):
     '''
     self.io_adapter.on_button_press(self.button_pressed)
     self.io_adapter.startup()
+    self._notify_observers(Event("startup", self.scheduler.current_state()))
 
   def run(self):
     # Non-blocking fetch from queue
@@ -82,6 +83,7 @@ class Controller(object):
     Call IO adapter to feed on another thread
     TODO: synchronise access to io_adapter; we could have race condition here
     '''
+    self._notify_observers(Event("feeding", feeding))
     feeder_thread = threading.Thread(target=self.io_adapter.feed, args=(feeding,))
     feeder_thread.start()
     feeder_thread.join()
