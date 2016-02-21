@@ -17,6 +17,7 @@ CONFIG = Configuration.for_env(APP_ENV)
 HEARTBEAT_TIME = CONFIG.heartbeat_time()
 FEEDS = CONFIG.feeds()
 HEARTBEAT_QUEUE = Queue.Queue()
+OBSERVERS = CONFIG.build_observers()
 
 def heartbeat_callback():
   HEARTBEAT_QUEUE.put(controller.heartbeat)
@@ -32,7 +33,7 @@ def read_from_heartbeat_queue():
 if __name__ == "__main__":
   scheduler = FeedScheduler(FEEDS)
   io_adapter = CONFIG.build_io_adapter()
-  controller = Controller(scheduler, io_adapter)
+  controller = Controller(scheduler, io_adapter, OBSERVERS)
   heartbeat = HeartbeatTimer(HEARTBEAT_TIME, heartbeat_callback)
 
   try:

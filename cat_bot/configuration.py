@@ -66,8 +66,20 @@ class Configuration(object):
     else:
       raise Exception("Unknown io_adapter: '%s'" % io_adapter_config)
 
+  def build_observers(self):
+    '''
+    Return list of instantiated observers for this configuration
+    '''
+    observers_config = self.config["observers"]
+    return map(self._create_observer_from_config, observers_config)
+
   def _create_feed_from_config(self, feed_config):
     '''
     Private: create a Feed from a dictionary of values
     '''
     return Feed.build(feed_config)
+
+  def _create_observer_from_config(self, observer_config):
+    if observer_config["klass"] == "SpreadsheetUpdater":
+      from observers.spreadsheet_updater import SpreadsheetUpdater
+      return SpreadsheetUpdater()

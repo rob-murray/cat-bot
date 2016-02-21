@@ -12,3 +12,5 @@ feeds:
   - name: "night"
     hour: 17
     minute: 30
+observers:
+  - klass: "SpreadsheetUpdater"

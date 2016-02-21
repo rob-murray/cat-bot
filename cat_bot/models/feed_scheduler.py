@@ -74,11 +74,32 @@ class FeedScheduler(object):
 
     return feed
 
+  def current_state(self):
+    '''
+    Query for the current state.
+
+    Returns:
+      structure with:
+        * feeds_remaining
+        * previous_feed (empty if none for this period)
+        * next_feed (empty if none remaining for this period)
+    '''
+    return {
+      "feeds_remaining": self.__feeds_remaining_count(),
+      "previous_feed": self.__previous_feed(),
+      "next_feed": self.__next_feed()
+    }
+
   def __any_remaining_feeds(self):
     return self.current_feed_index < self.max_feeds
 
   def __next_feed(self):
-    return self.feeds[self.current_feed_index]
+    if self.__any_remaining_feeds():
+      return self.feeds[self.current_feed_index]
+
+  def __previous_feed(self):
+    if self.current_feed_index > 0:
+      return self.feeds[self.current_feed_index - 1]
 
   def __increment_feed_index(self):
     self.current_feed_index += 1
