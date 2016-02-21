@@ -43,4 +43,4 @@ class FeedTime(object):
       return False
 
   def to_display(self):
-    return "FeedTime: hour={:d} minute={:d} ".format(self.hour_of_the_day, self.minute_of_the_day)
+    return "<FeedTime: hour={:d} minute={:d}>".format(self.hour_of_the_day, self.minute_of_the_day)

@@ -2,6 +2,7 @@ import logging
 import time
 import Queue
 import threading
+from models.event import Event
 
 class Controller(object):
   '''
@@ -9,7 +10,7 @@ class Controller(object):
 
   '''
 
-  def __init__(self, scheduler, io_adapter):
+  def __init__(self, scheduler, io_adapter, observers=None):
     '''
     Constructor
 
@@ -22,6 +23,10 @@ class Controller(object):
     self.scheduler = scheduler
     self.io_adapter = io_adapter
     self.event_queue = Queue.Queue()
+    if observers is None:
+      self.observers = []
+    else:
+      self.observers = observers
 
   def start(self):
     '''
@@ -30,6 +35,7 @@ class Controller(object):
     '''
     self.io_adapter.on_button_press(self.button_pressed)
     self.io_adapter.startup()
+    self._notify_observers(Event("startup", self.scheduler.current_state()))
 
   def run(self):
     # Non-blocking fetch from queue
@@ -77,8 +83,8 @@ class Controller(object):
     Call IO adapter to feed on another thread
     TODO: synchronise access to io_adapter; we could have race condition here
     '''
-    func = self.io_adapter.feed
-    feeder_thread = threading.Thread(target=func, args=(feeding,))
+    self._notify_observers(Event("feeding", feeding))
+    feeder_thread = threading.Thread(target=self.io_adapter.feed, args=(feeding,))
     feeder_thread.start()
     feeder_thread.join()
 
@@ -89,6 +95,7 @@ class Controller(object):
     '''
     self.logger.debug(">>> heartbeat >>>")
     self.io_adapter.tick()
+    self._notify_observers(Event("heartbeat", self.scheduler.current_state()))
 
     time_now = time.localtime(time.time())
     if time_now.tm_hour == 0 and time_now.tm_min == 0:
@@ -101,3 +108,14 @@ class Controller(object):
       self._invoke_feeder(feeding)
     else:
       self.logger.debug("Not time yet...")
+
+  def _notify_observers(self, event):
+    '''
+    For a given event, notify all observers.
+    Run each case in another thread daemon so as not to block main program
+    TODO: manage this in pool
+    '''
+    for observer in self.observers:
+      t = threading.Thread(target=observer.notify, args=[event])
+      t.setDaemon(True)
+      t.start()
