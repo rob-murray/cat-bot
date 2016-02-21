@@ -12,3 +12,7 @@ feeds:
   - name: "night"
     hour: 17
     minute: 30
+observers:
+  - klass: "SpreadsheetUpdater"
+    ifttt_event_name: "cat_bot_log"
+    ifttt_api_key: "do-not-commit"

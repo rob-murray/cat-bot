@@ -69,6 +69,7 @@ Configuration manifests are in `config` directory. There are the following optio
 * `logging_config` - Path to the logging configuration (see below)
 * `io_adapter` - The classname of IO adapter. Supports **{LoggingIO|RaspberryPi}** - LoggingIO can be used for dev testing where there is no GPIO.
 * `feeds` - An array of `Feed` objects (see below)
+* `observers` - An array of objects to be configured as observers of cat_bot state change (See below)
 
 The configuration file used can be set by the `APP_ENV` Environment variable, this supports the following values **{development|production}**. The default is `development` if not provided.
 
@@ -89,6 +90,15 @@ A `Feed` can be configured with the following properites:
 * `minute` - The minute of the day at which to feed
 * `quantity` - TODO The quantity of food to be served aka the servo rotation time in secs
 
+#### Observers
+
+An observer will get notified when the events below occur and can do something on either if required.
+
+* `startup` - When application starts
+* `heartbeat` - For each internal tick or heartbeat
+* `feeding` - When a feed occurs
+
+Each observer in configuration should specify what it needs to be instantiated (eg Api key), the configuration will build this. The observer class should just respond to the `notify` method with the single argument of `event`. This will method will be called when the event occurs in a non-main thread.
 
 ### Running
 
