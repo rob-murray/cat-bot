@@ -58,10 +58,10 @@ class Configuration(object):
     io_adapter_config = self.config["io_adapter"]
 
     if io_adapter_config == "RaspberryPi":
-      from io.raspberry_pi import RaspberryPi
+      from io_adapters.raspberry_pi import RaspberryPi
       return RaspberryPi()
     elif io_adapter_config == "LoggingIO":
-      from io.logging_io import LoggingIO
+      from io_adapters.logging_io import LoggingIO
       return LoggingIO()
     else:
       raise Exception("Unknown io_adapter: '%s'" % io_adapter_config)
